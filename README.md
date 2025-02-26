@@ -140,10 +140,10 @@ libGL error: failed to load driver: swrast
 ```bash
  conda install -c conda-forge gcc
 ```
+接下来就完全可以正常运行了~
 
 
-PS：也尝试了在cuda11.7的3090上配置也是正常的
-接下来改为在cuda11.7的3090上配置看看（3090上的就是8.6因此setup.py不需要更改）~
+PS：也尝试了在cuda11.7的3090上配置也是正常的（而我的3090上的就是8.6因此setup.py不需要更改）~
 
 之前有同行在[issue](https://github.com/rmurai0610/MASt3R-SLAM/issues/9)提到到对于pytorch<2.5.0在运行`pip install --no-build-isolation -e .`的时候可能会报错。
 对应的`linalg_norm`部分进行修改即可~
