@@ -87,6 +87,8 @@ conda activate mast3r-slam
 
 # 直接采用py脚本运行不带标定参数的
 CUDA_VISIBLE_DEVICES=3 python main.py --dataset datasets/euroc/MH_01_easy/ --no-viz --config config/eval_no_calib.yaml
+CUDA_VISIBLE_DEVICES=3 python main.py --dataset datasets/euroc/MH_01_easy/ --config config/eval_no_calib.yaml
+CUDA_VISIBLE_DEVICES=3 python main.py --dataset datasets/tum/rgbd_dataset_freiburg1_room/ --config config/calib.yaml
 ```
 
 但是会报错`RuntimeError: CUDA error: no kernel image is available for execution on the device`，也提了[issue](https://github.com/rmurai0610/MASt3R-SLAM/issues/12)
@@ -94,7 +96,7 @@ CUDA_VISIBLE_DEVICES=3 python main.py --dataset datasets/euroc/MH_01_easy/ --no-
 查看一下`nvidia-smi --query-gpu=compute_cap --format=csv`发现CUDA compute capability是8.0
 
 <div align="center">
-  <img src="./media/微信截图_20250226194554.png" width="30%" />
+  <img src="./media/微信截图_20250226194554.png" width="50%" />
 <figcaption>  
 </figcaption>
 </div>
@@ -103,15 +105,20 @@ CUDA_VISIBLE_DEVICES=3 python main.py --dataset datasets/euroc/MH_01_easy/ --no-
 
 work!!!
 
+但是继续运行代码会发现libGL打不开
+
+<div align="center">
+  <img src="./media/微信截图_20250226200040.png" width="50%" />
+<figcaption>  
+</figcaption>
+</div>
+
+
 PS：也尝试了在cuda11.7的3090上配置也是正常的
 接下来改为在cuda11.7的3090上配置看看（3090上的就是8.6因此setup.py不需要更改）~
 
 之前有同行在[issue](https://github.com/rmurai0610/MASt3R-SLAM/issues/9)提到到对于pytorch<2.5.0在运行`pip install --no-build-isolation -e .`的时候可能会报错。
-对应的部分进行修改即可~
-
-```bash
-python main.py --dataset datasets/tum/rgbd_dataset_freiburg1_room/  --no-viz --config config/calib.yaml
-```
+对应的`linalg_norm`部分进行修改即可~
 
 
 # 实验效果
