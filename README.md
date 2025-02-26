@@ -91,9 +91,10 @@ CUDA_VISIBLE_DEVICES=3 python main.py --dataset datasets/euroc/MH_01_easy/ --con
 CUDA_VISIBLE_DEVICES=3 python main.py --dataset datasets/tum/rgbd_dataset_freiburg1_room/ --config config/calib.yaml
 ```
 
-但是会报错`RuntimeError: CUDA error: no kernel image is available for execution on the device`，也提了[issue](https://github.com/rmurai0610/MASt3R-SLAM/issues/12)
+但是会报错`RuntimeError: CUDA error: no kernel image is available for execution on the device`，也提了[issue](https://github.com/rmurai0610/MASt3R-SLAM/issues/12)。最终在[issue](https://github.com/rmurai0610/MASt3R-SLAM/issues/4)中发现了类似的问题，然后根据作者提供的建议进行修改~
 
-查看一下`nvidia-smi --query-gpu=compute_cap --format=csv`发现CUDA compute capability是8.0
+这个问题应该是CUDA compute capability跟编译要用的不一样导致的。
+先查看一下`nvidia-smi --query-gpu=compute_cap --format=csv`发现CUDA compute capability是8.0
 
 <div align="center">
   <img src="./media/微信截图_20250226194554.png" width="50%" />
@@ -101,7 +102,7 @@ CUDA_VISIBLE_DEVICES=3 python main.py --dataset datasets/tum/rgbd_dataset_freibu
 </figcaption>
 </div>
 
-那么就将`setup.py`中的`"-gencode=arch=compute_86,code=sm_86",`先改为80试试.
+那么就将`setup.py`中的`"-gencode=arch=compute_86,code=sm_86",`先改为80即可
 
 <div align="center">
   <img src="./media/微信截图_20250226201144.png" width="50%" />
@@ -109,9 +110,9 @@ CUDA_VISIBLE_DEVICES=3 python main.py --dataset datasets/tum/rgbd_dataset_freibu
 </figcaption>
 </div>
 
-work!!!
+重新编译`pip install --no-build-isolation -e .`,再次运行就work!!!
 
-但是继续运行代码会发现libGL打不开
+至此，如果不需要可视化的话应该就没有其他问题了。但是如果要进行可视化，运行代码会发现libGL打不开
 
 <div align="center">
   <img src="./media/微信截图_20250226200040.png" width="50%" />
