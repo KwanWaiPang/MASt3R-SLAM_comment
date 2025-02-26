@@ -24,10 +24,10 @@ conda activate mast3r-slam
 # 查看cuda版本来决定安装哪个pytorch
 nvcc --version
 
-# CUDA 12.1 (12.2应该也是用这个)
+# CUDA 12.1 (12.2应该也是用这个，A100)
 conda install pytorch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 pytorch-cuda=12.1 -c pytorch -c nvidia
 
-#CUDA11.7
+#CUDA11.7 （3090）
 conda install pytorch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 pytorch-cuda=11.7 -c pytorch -c nvidia
 
 
@@ -90,3 +90,19 @@ python main.py --dataset datasets/euroc/MH_01_easy/ --no-viz --config config/eva
 ```
 
 但是会报错`RuntimeError: CUDA error: no kernel image is available for execution on the device`，也提了[issue](https://github.com/rmurai0610/MASt3R-SLAM/issues/12)
+
+查看一下`nvidia-smi --query-gpu=compute_cap --format=csv`发现CUDA compute capability是8.0
+
+<div align="center">
+  <img src="./media/微信截图_20250226194554.png" width="30%" />
+<figcaption>  
+</figcaption>
+</div>
+
+那么就将`setup.py`中的`"-gencode=arch=compute_86,code=sm_86",`先改为80试试
+
+
+接下来改为在cuda11.7的3090上配置看看（3090上的就是8.6因此setup.py不需要更改）~
+
+之前有同行在[issue](https://github.com/rmurai0610/MASt3R-SLAM/issues/9)提到到对于pytorch<2.5.0在运行`pip install --no-build-isolation -e .`的时候可能会报错。
+对应的部分进行修改即可~
