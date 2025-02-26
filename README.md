@@ -27,6 +27,9 @@ nvcc --version
 # CUDA 12.1 (12.2应该也是用这个)
 conda install pytorch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 pytorch-cuda=12.1 -c pytorch -c nvidia
 
+#CUDA11.7
+conda install pytorch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 pytorch-cuda=11.7 -c pytorch -c nvidia
+
 
 pip install -e thirdparty/mast3r
 pip install -e thirdparty/in3d
