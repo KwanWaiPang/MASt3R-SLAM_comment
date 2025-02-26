@@ -88,3 +88,5 @@ conda activate mast3r-slam
 # 直接采用py脚本运行不带标定参数的
 python main.py --dataset datasets/euroc/MH_01_easy/ --no-viz --config config/eval_no_calib.yaml
 ```
+
+但是会报错`RuntimeError: CUDA error: no kernel image is available for execution on the device`，也提了[issue](https://github.com/rmurai0610/MASt3R-SLAM/issues/12)
