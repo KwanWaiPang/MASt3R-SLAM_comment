@@ -86,7 +86,7 @@ conda activate mast3r-slam
 # bash ./scripts/eval_euroc.sh --no-calib
 
 # 直接采用py脚本运行不带标定参数的
-python main.py --dataset datasets/euroc/MH_01_easy/ --no-viz --config config/eval_no_calib.yaml
+CUDA_VISIBLE_DEVICES=3 python main.py --dataset datasets/euroc/MH_01_easy/ --no-viz --config config/eval_no_calib.yaml
 ```
 
 但是会报错`RuntimeError: CUDA error: no kernel image is available for execution on the device`，也提了[issue](https://github.com/rmurai0610/MASt3R-SLAM/issues/12)
@@ -99,13 +99,19 @@ python main.py --dataset datasets/euroc/MH_01_easy/ --no-viz --config config/eva
 </figcaption>
 </div>
 
-那么就将`setup.py`中的`"-gencode=arch=compute_86,code=sm_86",`先改为80试试
+那么就将`setup.py`中的`"-gencode=arch=compute_86,code=sm_86",`先改为80试试.
 
+work!!!
 
+PS：也尝试了在cuda11.7的3090上配置也是正常的
 接下来改为在cuda11.7的3090上配置看看（3090上的就是8.6因此setup.py不需要更改）~
 
 之前有同行在[issue](https://github.com/rmurai0610/MASt3R-SLAM/issues/9)提到到对于pytorch<2.5.0在运行`pip install --no-build-isolation -e .`的时候可能会报错。
 对应的部分进行修改即可~
+
+```bash
+python main.py --dataset datasets/tum/rgbd_dataset_freiburg1_room/  --no-viz --config config/calib.yaml
+```
 
 
 # 实验效果
