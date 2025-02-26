@@ -142,3 +142,4 @@ datasets/*
 
 *.so
 logs/*
+*.ini

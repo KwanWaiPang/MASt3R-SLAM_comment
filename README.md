@@ -87,7 +87,7 @@ conda activate mast3r-slam
 
 # 直接采用py脚本运行不带标定参数的
 CUDA_VISIBLE_DEVICES=3 python main.py --dataset datasets/euroc/MH_01_easy/ --no-viz --config config/eval_no_calib.yaml
-CUDA_VISIBLE_DEVICES=3 python main.py --dataset datasets/euroc/MH_01_easy/ --config config/eval_no_calib.yaml
+CUDA_VISIBLE_DEVICES=3 python main.py --dataset datasets/euroc/V1_03_difficult --config config/eval_no_calib.yaml
 CUDA_VISIBLE_DEVICES=3 python main.py --dataset datasets/tum/rgbd_dataset_freiburg1_room/ --config config/calib.yaml
 ```
 
