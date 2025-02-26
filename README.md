@@ -103,6 +103,12 @@ CUDA_VISIBLE_DEVICES=3 python main.py --dataset datasets/tum/rgbd_dataset_freibu
 
 那么就将`setup.py`中的`"-gencode=arch=compute_86,code=sm_86",`先改为80试试.
 
+<div align="center">
+  <img src="./media/微信截图_20250226201144.png" width="50%" />
+<figcaption>  
+</figcaption>
+</div>
+
 work!!!
 
 但是继续运行代码会发现libGL打不开
@@ -112,6 +118,28 @@ work!!!
 <figcaption>  
 </figcaption>
 </div>
+
+从下面路径可以找到`/lib/x86_64-linux-gnu/dri/swrast_dri.so`然后将其进行复制到`/usr/lib/dri`中
+```bash
+sudo cp /lib/x86_64-linux-gnu/dri/swrast_dri.so /usr/lib/dri
+
+# 当然软链接一下也是可以的，注意需要创建文件夹dri
+sudo mkdir dri
+ln -s /lib/x86_64-linux-gnu/dri/swrast_dri.so /usr/lib/dri
+```
+
+接下来又出现新的错误：
+
+~~~
+libGL error: MESA-LOADER: failed to open swrast: /home/gwp/miniconda3/envs/mast3r-slam/bin/../lib/libstdc++.so.6: version `GLIBCXX_3.4.30' not found (required by /lib/x86_64-linux-gnu/libLLVM-15.so.1) (search paths /usr/lib/x86_64-linux-gnu/dri:\$${ORIGIN}/dri:/usr/lib/dri, suffix _dri)
+libGL error: failed to load driver: swrast
+~~~
+
+应该是缺少conda识别的GCC，执行安装：
+
+```bash
+ conda install -c conda-forge gcc
+```
 
 
 PS：也尝试了在cuda11.7的3090上配置也是正常的
