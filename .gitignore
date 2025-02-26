@@ -1,4 +1,4 @@
-# checkpoints/
+checkpoints/
 
 # # Byte-compiled / optimized / DLL files
 # __pycache__/
@@ -138,3 +138,6 @@
 # *.pt
 # *.ini
 # notebooks/*
+
+
+*.so
