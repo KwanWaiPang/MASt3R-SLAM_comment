@@ -28,7 +28,8 @@ if has_cuda:
     sources.append("mast3r_slam/backend/src/matching_kernels.cu")
     extra_compile_args["nvcc"] = [
         "-O3",
-        "-gencode=arch=compute_86,code=sm_86",
+        # "-gencode=arch=compute_86,code=sm_86",
+        "-gencode=arch=compute_80,code=sm_80",
     ]
     ext_modules = [
         CUDAExtension(
