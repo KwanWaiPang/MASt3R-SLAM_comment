@@ -77,7 +77,7 @@ ln -s /home/gwp/AirIMU/Euroc_dataset /home/gwp/MASt3R-SLAM/datasets/euroc
 </figcaption>
 </div>
 
-# 进行验证
+# debug过程
 EuRoC Dataset，bash运行的应该就是分别采用带标定参数或者不带标定参数的
 
 ```bash
@@ -106,3 +106,6 @@ python main.py --dataset datasets/euroc/MH_01_easy/ --no-viz --config config/eva
 
 之前有同行在[issue](https://github.com/rmurai0610/MASt3R-SLAM/issues/9)提到到对于pytorch<2.5.0在运行`pip install --no-build-isolation -e .`的时候可能会报错。
 对应的部分进行修改即可~
+
+
+# 实验效果
