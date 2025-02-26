@@ -1,19 +1,19 @@
 #!/bin/bash
 
-dataset_path="datasets/euroc/"
+dataset_path="/home/gwp/AirIMU/Euroc_dataset/"
 
 datasets=(
     MH_01_easy
-    MH_02_easy
-    MH_03_medium
-    MH_04_difficult
-    MH_05_difficult
-    V1_01_easy
-    V1_02_medium
-    V1_03_difficult
-    V2_01_easy
-    V2_02_medium
-    V2_03_difficult
+    # MH_02_easy
+    # MH_03_medium
+    # MH_04_difficult
+    # MH_05_difficult
+    # V1_01_easy
+    # V1_02_medium
+    # V1_03_difficult
+    # V2_01_easy
+    # V2_02_medium
+    # V2_03_difficult
 )
 
 no_calib=false
@@ -38,20 +38,21 @@ if [ "$print_only" = false ]; then
     for dataset in ${datasets[@]}; do
         dataset_name="$dataset_path""$dataset"/
         if [ "$no_calib" = true ]; then
-            python main.py --dataset $dataset_name --no-viz --save-as euroc/no_calib/$dataset --config config/eval_no_calib.yaml
+            CUDA_VISIBLE_DEVICES=0 python main.py --dataset $dataset_name --no-viz --save-as euroc/no_calib/$dataset --config config/eval_no_calib.yaml
         else
-            python main.py --dataset $dataset_name --no-viz --save-as euroc/calib/$dataset --config config/eval_calib.yaml
+            CUDA_VISIBLE_DEVICES=0 python main.py --dataset $dataset_name --no-viz --save-as euroc/calib/$dataset --config config/eval_calib.yaml
+            # python main.py --dataset $dataset_name --save-as euroc/calib/$dataset --config config/eval_calib.yaml
         fi
     done
 fi
 
-for dataset in ${datasets[@]}; do
-    dataset_name="$dataset_path""$dataset"/
-    echo ${dataset_name}
-    if [ "$no_calib" = true ]; then
-        evo_ape tum groundtruths/euroc/$dataset.txt logs/euroc/no_calib/$dataset/$dataset.txt -as
-    else
-        evo_ape tum groundtruths/euroc/$dataset.txt logs/euroc/calib/$dataset/$dataset.txt -as
-    fi
+# for dataset in ${datasets[@]}; do
+#     dataset_name="$dataset_path""$dataset"/
+#     echo ${dataset_name}
+#     if [ "$no_calib" = true ]; then
+#         evo_ape tum groundtruths/euroc/$dataset.txt logs/euroc/no_calib/$dataset/$dataset.txt -as
+#     else
+#         evo_ape tum groundtruths/euroc/$dataset.txt logs/euroc/calib/$dataset/$dataset.txt -as
+#     fi
 
-done
+# done

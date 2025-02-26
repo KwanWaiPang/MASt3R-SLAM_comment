@@ -12,6 +12,7 @@
   <div align="center"></div>
 
 # 配置过程
+
 ```bash
 # git clone --recurse-submodules https://github.com/rmurai0610/MASt3R-SLAM.git
 # rm -rf .git
@@ -23,12 +24,9 @@ conda activate mast3r-slam
 # 查看cuda版本来决定安装哪个pytorch
 nvcc --version
 
-# CUDA 11.8
-conda install pytorch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1  pytorch-cuda=11.8 -c pytorch -c nvidia
 # CUDA 12.1 (12.2应该也是用这个)
 conda install pytorch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 pytorch-cuda=12.1 -c pytorch -c nvidia
-# CUDA 12.4
-conda install pytorch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 pytorch-cuda=12.4 -c pytorch -c nvidia
+
 
 pip install -e thirdparty/mast3r
 pip install -e thirdparty/in3d
@@ -47,6 +45,7 @@ wget https://download.europe.naverlabs.com/ComputerVision/MASt3R/MASt3R_ViTLarge
 
 # 下载数据集
 此处直接用之前下载的Euroc数据集`/home/gwp/AirIMU/Euroc_dataset`
+
 ```bash
 # TUM-RGBD Dataset
 bash ./scripts/download_tum.sh
@@ -61,9 +60,28 @@ bash ./scripts/download_euroc.sh
 bash ./scripts/download_eth3d.sh
 ```
 
-# 进行验证
-EuRoC Dataset，应该就是分别采用带标定参数或者不带标定参数的
+注意在下载的脚本里面会对数据集进行创建文件夹然后规定命名，比如`euroc`，而代码中会寻找`euroc`来确定是否目标数据集，因此如果下载的数据文件命名不一样，需要修改文件名或者代码~
+
+当然也可以进行软链接:
+
 ```bash
-bash ./scripts/eval_euroc.sh 
-bash ./scripts/eval_euroc.sh --no-calib
+ln -s /home/gwp/AirIMU/Euroc_dataset /home/gwp/MASt3R-SLAM/datasets/euroc
+```
+
+<div align="center">
+  <img src="./media/微信截图_20250226172338.png" width="30%" />
+<figcaption>  
+</figcaption>
+</div>
+
+# 进行验证
+EuRoC Dataset，bash运行的应该就是分别采用带标定参数或者不带标定参数的
+
+```bash
+conda activate mast3r-slam
+# bash ./scripts/eval_euroc.sh 
+# bash ./scripts/eval_euroc.sh --no-calib
+
+# 直接采用py脚本运行不带标定参数的
+python main.py --dataset datasets/euroc/MH_01_easy/ --no-viz --config config/eval_no_calib.yaml
 ```

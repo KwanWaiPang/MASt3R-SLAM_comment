@@ -293,7 +293,7 @@ def load_dataset(dataset_path):
     split_dataset_type = dataset_path.split("/")
     if "tum" in split_dataset_type:
         return TUMDataset(dataset_path)
-    if "euroc" in split_dataset_type:
+    if "euroc" in split_dataset_type:#如果有euroc
         return EurocDataset(dataset_path)
     if "eth3d" in split_dataset_type:
         return ETH3DDataset(dataset_path)

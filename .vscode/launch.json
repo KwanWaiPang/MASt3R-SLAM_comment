@@ -1,0 +1,25 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "testing",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "main.py",
+            "console": "integratedTerminal",
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "3",
+                // "PYTHONPATH": "/home/gwp/DEIO2"  // 添加路径
+            },
+            "args":[
+                "--dataset=datasets/euroc/MH_01_easy/",
+                "--config=config/eval_no_calib.yaml", //配置文件
+                "--no-viz", //不可视化
+            ]
+        },
+    ]
+}

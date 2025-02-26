@@ -1,7 +1,7 @@
 checkpoints/
 
 # # Byte-compiled / optimized / DLL files
-# __pycache__/
+__pycache__/
 # *.py[cod]
 # *$py.class
 
@@ -131,7 +131,7 @@ checkpoints/
 # .pyre/
 
 # ckpt/
-# datasets
+datasets/*
 # logs/
 # *.prof
 # screen.yaml

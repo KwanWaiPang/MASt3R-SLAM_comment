@@ -152,8 +152,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", default="datasets/tum/rgbd_dataset_freiburg1_desk")
     parser.add_argument("--config", default="config/base.yaml")
-    parser.add_argument("--save-as", default="default")
-    parser.add_argument("--no-viz", action="store_true")
+    parser.add_argument("--save-as", default="default") #保存结果
+    parser.add_argument("--no-viz", action="store_true") #不可视化
 
     args = parser.parse_args()
 
@@ -248,7 +248,7 @@ if __name__ == "__main__":
         )
         frame = create_frame(i, img, T_WC, img_size=dataset.img_size, device=device)
 
-        if mode == Mode.INIT:
+        if mode == Mode.INIT:#初始化状态
             # Initialize via mono inference, and encoded features neeed for database
             X_init, C_init = mast3r_inference_mono(model, frame)
             frame.update_pointmap(X_init, C_init)
