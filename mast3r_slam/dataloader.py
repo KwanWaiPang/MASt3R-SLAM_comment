@@ -223,10 +223,12 @@ class MP4Dataset(MonocularDataset):
         self.stride = config["dataset"]["subsample"]
 
     def __len__(self):
-        return self.total_frames // self.stride
+        # return self.total_frames // self.stride
+        return self.total_frames - self.total_frames % self.stride
 
     def read_img(self, idx):
-        img = self.decoder[idx]  # c,h,w
+        # img = self.decoder[idx]  # c,h,w
+        img = self.decoder[idx * self.stride]  # c,h,w
         img = img.permute(1, 2, 0)
         img = img.numpy()
         img = img.astype(self.dtype)
