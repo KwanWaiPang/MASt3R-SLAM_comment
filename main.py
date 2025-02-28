@@ -238,7 +238,8 @@ if __name__ == "__main__":
             break
 
         timestamp, img = dataset[i]
-        frames.append(img)
+        if save_frames:
+            frames.append(img)
 
         # get frames last camera pose
         T_WC = (
