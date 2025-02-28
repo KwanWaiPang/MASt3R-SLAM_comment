@@ -11,7 +11,8 @@ import os
 from mast3r.catmlp_dpt_head import mast3r_head_factory
 
 import mast3r.utils.path_to_dust3r  # noqa
-from dust3r.model import AsymmetricCroCo3DStereo  # noqa
+# from dust3r.model import AsymmetricCroCo3DStereo  # noqa
+from thirdparty.mast3r.dust3r.dust3r.model import AsymmetricCroCo3DStereo  # noqa
 from dust3r.utils.misc import transpose_to_landscape  # noqa
 
 
@@ -37,7 +38,7 @@ def load_model(model_path, device, verbose=True):
     return net.to(device)
 
 
-class AsymmetricMASt3R(AsymmetricCroCo3DStereo):
+class AsymmetricMASt3R(AsymmetricCroCo3DStereo):#继承自AsymmetricCroCo3DStereo
     def __init__(self, desc_mode=('norm'), two_confs=False, desc_conf_mode=None, **kwargs):
         self.desc_mode = desc_mode
         self.two_confs = two_confs
@@ -45,7 +46,7 @@ class AsymmetricMASt3R(AsymmetricCroCo3DStereo):
         super().__init__(**kwargs)
 
     @classmethod
-    def from_pretrained(cls, pretrained_model_name_or_path, **kw):
+    def from_pretrained(cls, pretrained_model_name_or_path, **kw):#从pth加载模型
         if os.path.isfile(pretrained_model_name_or_path):
             return load_model(pretrained_model_name_or_path, device='cpu')
         else:

@@ -22,7 +22,7 @@ from mast3r_slam.mast3r_utils import (
 from mast3r_slam.multiprocess_utils import new_queue, try_get_msg
 from mast3r_slam.tracker import FrameTracker
 from mast3r_slam.visualization import WindowMsg, run_visualization
-import torch.multiprocessing as mp
+import torch.multiprocessing as mp #多进程
 
 
 def relocalization(frame, keyframes, factor_graph, retrieval_database):
@@ -30,7 +30,7 @@ def relocalization(frame, keyframes, factor_graph, retrieval_database):
     # The lock slows viz down but safer this way...
     with keyframes.lock:
         kf_idx = []
-        retrieval_inds = retrieval_database.update(
+        retrieval_inds = retrieval_database.update(#执行RetrievalDatabase的update操作
             frame,
             add_after_query=False,
             k=config["retrieval"]["k"],
@@ -75,8 +75,8 @@ def run_backend(cfg, model, states, keyframes, K):
     set_global_config(cfg)
 
     device = keyframes.device
-    factor_graph = FactorGraph(model, keyframes, K, device)
-    retrieval_database = load_retriever(model)
+    factor_graph = FactorGraph(model, keyframes, K, device)#创建因子图
+    retrieval_database = load_retriever(model)#加载检索器
 
     mode = states.get_mode()
     while mode is not Mode.TERMINATED:
@@ -86,9 +86,9 @@ def run_backend(cfg, model, states, keyframes, K):
             continue
         if mode == Mode.RELOC:
             frame = states.get_frame()
-            success = relocalization(frame, keyframes, factor_graph, retrieval_database)
-            if success:
-                states.set_mode(Mode.TRACKING)
+            success = relocalization(frame, keyframes, factor_graph, retrieval_database)#进行重定位
+            if success:#如果重定位成功
+                states.set_mode(Mode.TRACKING)#才设置为跟踪状态
             states.dequeue_reloc()
             continue
         idx = -1
@@ -143,7 +143,7 @@ def run_backend(cfg, model, states, keyframes, K):
 
 # 统一采用main.py来运行所有脚本测试~
 if __name__ == "__main__":
-    mp.set_start_method("spawn")
+    mp.set_start_method("spawn")#设置多进程的启动方式为 "spawn"（涉及 CUDA 或 GPU 操作时，这样设置更加安全~）
     torch.backends.cuda.matmul.allow_tf32 = True
     torch.set_grad_enabled(False)
     device = "cuda:0"
@@ -151,7 +151,7 @@ if __name__ == "__main__":
     datetime_now = str(datetime.datetime.now()).replace(" ", "_")
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", default="datasets/tum/rgbd_dataset_freiburg1_desk")
+    parser.add_argument("--dataset", default="datasets/tum/rgbd_dataset_freiburg1_desk")#数据集
     parser.add_argument("--config", default="config/base.yaml")
     parser.add_argument("--save-as", default="default")
     parser.add_argument("--no-viz", action="store_true")
@@ -163,14 +163,15 @@ if __name__ == "__main__":
     print(args.dataset)
     print(config)
 
-    manager = mp.Manager()
+    manager = mp.Manager()#统一的多进程管理器，用于管理跨进程共享的数据。
     main2viz = new_queue(manager, args.no_viz)
     viz2main = new_queue(manager, args.no_viz)
 
-    dataset = load_dataset(args.dataset)
+    dataset = load_dataset(args.dataset)#根据不同的数据类型来加载数据集
     dataset.subsample(config["dataset"]["subsample"])
-    h, w = dataset.get_img_shape()[0]
+    h, w = dataset.get_img_shape()[0]#图像的尺寸
 
+    # 是否使用标定参数
     if args.calib:
         with open(args.calib, "r") as f:
             intrinsics = yaml.load(f, Loader=yaml.SafeLoader)
@@ -183,20 +184,20 @@ if __name__ == "__main__":
             intrinsics["calibration"],
         )
 
-    keyframes = SharedKeyframes(manager, h, w)
-    states = SharedStates(manager, h, w)
+    keyframes = SharedKeyframes(manager, h, w)#关键帧类，管理关键帧的数据
+    states = SharedStates(manager, h, w)#系统状态
 
-    if not args.no_viz:
+    if not args.no_viz:#如果不是no_viz模式，那就是可视化
         viz = mp.Process(
-            target=run_visualization,
+            target=run_visualization,#运行可视化
             args=(config, states, keyframes, main2viz, viz2main),
         )
         viz.start()
 
-    model = load_mast3r(device=device)
+    model = load_mast3r(device=device)#加载MASt3R模型
     model.share_memory()
 
-    has_calib = dataset.has_calib()
+    has_calib = dataset.has_calib()#是否有标定参数
     use_calib = config["use_calib"]
 
     if use_calib and not has_calib:
@@ -207,10 +208,10 @@ if __name__ == "__main__":
         K = torch.from_numpy(dataset.camera_intrinsics.K_frame).to(
             device, dtype=torch.float32
         )
-        keyframes.set_intrinsics(K)
+        keyframes.set_intrinsics(K)#设置内参
 
     # remove the trajectory from the previous run
-    if dataset.save_results:
+    if dataset.save_results:#如果保存结果
         save_dir, seq_name = eval.prepare_savedir(args, dataset)
         traj_file = save_dir / f"{seq_name}.txt"
         recon_file = save_dir / f"{seq_name}.ply"
@@ -219,9 +220,10 @@ if __name__ == "__main__":
         if recon_file.exists():
             recon_file.unlink()
 
-    tracker = FrameTracker(model, keyframes, device)
+    tracker = FrameTracker(model, keyframes, device)#帧跟踪器
     last_msg = WindowMsg()
 
+    # 开启后端进程
     backend = mp.Process(target=run_backend, args=(config, model, states, keyframes, K))
     backend.start()
 
@@ -235,7 +237,7 @@ if __name__ == "__main__":
         msg = try_get_msg(viz2main)
         last_msg = msg if msg is not None else last_msg
         if last_msg.is_terminated:
-            states.set_mode(Mode.TERMINATED)
+            states.set_mode(Mode.TERMINATED)#设置为终止状态
             break
 
         if last_msg.is_paused and not last_msg.next:
@@ -252,7 +254,7 @@ if __name__ == "__main__":
 
         timestamp, img = dataset[i]
         if save_frames:
-            frames.append(img)
+            frames.append(img)#插入保存的帧
 
         # get frames last camera pose
         T_WC = (
@@ -262,7 +264,7 @@ if __name__ == "__main__":
         )
         frame = create_frame(i, img, T_WC, img_size=dataset.img_size, device=device)
 
-        if mode == Mode.INIT:
+        if mode == Mode.INIT:#如果是初始化状态
             # Initialize via mono inference, and encoded features neeed for database
             X_init, C_init = mast3r_inference_mono(model, frame)
             frame.update_pointmap(X_init, C_init)
@@ -273,7 +275,7 @@ if __name__ == "__main__":
             i += 1
             continue
 
-        if mode == Mode.TRACKING:
+        if mode == Mode.TRACKING:#如果是跟踪状态
             add_new_kf, match_info, try_reloc = tracker.track(frame)
             if try_reloc:
                 states.set_mode(Mode.RELOC)

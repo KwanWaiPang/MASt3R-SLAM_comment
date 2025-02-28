@@ -130,7 +130,7 @@ class SharedStates:
 
         self.lock = manager.RLock()
         self.paused = manager.Value("i", 0)
-        self.mode = manager.Value("i", Mode.INIT)
+        self.mode = manager.Value("i", Mode.INIT)#当前的模式，初始化为初始化
         self.reloc_sem = manager.Value("i", 0)
         self.global_optimizer_tasks = manager.list()
         self.edges_ii = manager.list()
@@ -153,7 +153,7 @@ class SharedStates:
         self.pos = torch.zeros(1, self.num_patches, 2, device=device, dtype=torch.long).share_memory_()
         # fmt: on
 
-    def set_frame(self, frame):
+    def set_frame(self, frame):#设置当前帧
         with self.lock:
             self.dataset_idx[:] = frame.frame_id
             self.img[:] = frame.img
@@ -200,7 +200,7 @@ class SharedStates:
         with self.lock:
             return self.mode.value
 
-    def set_mode(self, mode):
+    def set_mode(self, mode):#设置当前的模式
         with self.lock:
             self.mode.value = mode
 
@@ -219,7 +219,7 @@ class SharedStates:
 
 class SharedKeyframes:
     def __init__(self, manager, h, w, buffer=512, dtype=torch.float32, device="cuda"):
-        self.lock = manager.RLock()
+        self.lock = manager.RLock()#用于多进程间的同步。RLock（可重入锁）：允许同一进程多次获取锁而不阻塞，适用于嵌套调用或递归场景。
         self.n_size = manager.Value("i", 0)
 
         self.h, self.w = h, w
@@ -244,7 +244,7 @@ class SharedKeyframes:
         self.feat = torch.zeros(buffer, 1, self.num_patches, self.feat_dim, device=device, dtype=dtype).share_memory_()
         self.pos = torch.zeros(buffer, 1, self.num_patches, 2, device=device, dtype=torch.long).share_memory_()
         self.is_dirty = torch.zeros(buffer, 1, device=device, dtype=torch.bool).share_memory_()
-        self.K = torch.zeros(3, 3, device=device, dtype=dtype).share_memory_()
+        self.K = torch.zeros(3, 3, device=device, dtype=dtype).share_memory_()#相机内参
         # fmt: on
 
     def __getitem__(self, idx) -> Frame:
