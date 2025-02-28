@@ -141,7 +141,7 @@ def run_backend(cfg, model, states, keyframes, K):
             if len(states.global_optimizer_tasks) > 0:
                 idx = states.global_optimizer_tasks.pop(0)
 
-
+# 统一采用main.py来运行所有脚本测试~
 if __name__ == "__main__":
     mp.set_start_method("spawn")
     torch.backends.cuda.matmul.allow_tf32 = True
