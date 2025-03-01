@@ -3,6 +3,8 @@ import numpy as np
 from mast3r.retrieval.processor import Retriever
 from mast3r.retrieval.model import how_select_local
 
+from mast3r_slam.frame import Frame
+
 from asmk import io_helpers
 
 
@@ -40,7 +42,7 @@ class RetrievalDatabase(Retriever):
 
         return topk_features
 
-    def update(self, frame, add_after_query, k, min_thresh=0.0):
+    def update(self, frame:Frame, add_after_query, k, min_thresh=0.0):
         feat = self.prep_features(frame.feat)
         id = self.kf_counter  # Using own counter since otherwise messes up IVF
 

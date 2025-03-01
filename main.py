@@ -24,8 +24,12 @@ from mast3r_slam.tracker import FrameTracker
 from mast3r_slam.visualization import WindowMsg, run_visualization
 import torch.multiprocessing as mp #多进程
 
+from thirdparty.mast3r.mast3r.model import AsymmetricMASt3R
+from mast3r_slam.retrieval_database import RetrievalDatabase
+from mast3r_slam.frame import Frame
 
-def relocalization(frame, keyframes, factor_graph, retrieval_database):
+
+def relocalization(frame:Frame, keyframes:SharedKeyframes, factor_graph:FactorGraph, retrieval_database:RetrievalDatabase):
     # we are adding and then removing from the keyframe, so we need to be careful.
     # The lock slows viz down but safer this way...
     with keyframes.lock:
@@ -71,7 +75,7 @@ def relocalization(frame, keyframes, factor_graph, retrieval_database):
         return successful_loop_closure
 
 
-def run_backend(cfg, model, states, keyframes, K):
+def run_backend(cfg, model:AsymmetricMASt3R, states:SharedStates, keyframes:SharedKeyframes, K):
     set_global_config(cfg)
 
     device = keyframes.device
@@ -85,7 +89,7 @@ def run_backend(cfg, model, states, keyframes, K):
             time.sleep(0.01)
             continue
         if mode == Mode.RELOC:
-            frame = states.get_frame()
+            frame = states.get_frame()#存储当前帧的一些图像相关的信息
             success = relocalization(frame, keyframes, factor_graph, retrieval_database)#进行重定位
             if success:#如果重定位成功
                 states.set_mode(Mode.TRACKING)#才设置为跟踪状态
