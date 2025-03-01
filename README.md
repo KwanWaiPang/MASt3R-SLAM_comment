@@ -8,6 +8,7 @@
   <a href="https://kwanwaipang.github.io/MASt3R-SLAM/" target="_blank">Blog</a> 
   | <a href="https://arxiv.org/pdf/2412.12392" target="_blank">Paper</a>
   | <a href="https://github.com/rmurai0610/MASt3R-SLAM" target="_blank">Original Github Page</a>
+  | <a href=" https://github.com/KwanWaiPang/MASt3R_comment" target="_blank">MASt3R_comment</a>
   </h3>
   <div align="center"></div>
 
