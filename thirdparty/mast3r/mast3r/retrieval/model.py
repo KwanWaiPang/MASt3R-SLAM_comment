@@ -120,7 +120,7 @@ class RetrievalModel(nn.Module):
             for p in self.prewhiten.parameters():
                 p.requires_grad = False
         self.residual = residual
-        self.projector = self.build_projector(hdims, residual)
+        self.projector = self.build_projector(hdims, residual)#对backbone的输出进行投影
         self.dim = hdims[-1] if len(hdims) > 0 else self.backbone_dim
         self.postwhiten_freq = postwhiten
         self.postwhiten = nn.Identity() if postwhiten is None else Whitener(self.dim)

@@ -117,9 +117,9 @@ def mast3r_decode_symmetric_batch(
 
 
 @torch.inference_mode
-def mast3r_inference_mono(model, frame):
+def mast3r_inference_mono(model:AsymmetricMASt3R, frame):
     if frame.feat is None:
-        frame.feat, frame.pos, _ = model._encode_image(frame.img, frame.img_true_shape)
+        frame.feat, frame.pos, _ = model._encode_image(frame.img, frame.img_true_shape)#获取特征以及对应的位置信息
 
     feat = frame.feat
     pos = frame.pos

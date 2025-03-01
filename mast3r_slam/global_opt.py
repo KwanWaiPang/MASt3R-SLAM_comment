@@ -46,7 +46,7 @@ class FactorGraph:
             Qjj,
             Qji,
             Qij,
-        ) = mast3r_match_symmetric(
+        ) = mast3r_match_symmetric(#进行特征匹配
             self.model, feat_i, pos_i, feat_j, pos_j, shape_i, shape_j
         )
 

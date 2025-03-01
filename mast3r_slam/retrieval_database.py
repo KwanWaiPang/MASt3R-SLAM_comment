@@ -1,7 +1,9 @@
 import torch
 import numpy as np
-from mast3r.retrieval.processor import Retriever
-from mast3r.retrieval.model import how_select_local
+# from mast3r.retrieval.processor import Retriever
+from thirdparty.mast3r.mast3r.retrieval.processor import Retriever
+# from mast3r.retrieval.model import how_select_local
+from thirdparty.mast3r.mast3r.retrieval.model import how_select_local
 
 from mast3r_slam.frame import Frame
 
@@ -25,25 +27,27 @@ class RetrievalDatabase(Retriever):
 
     # Mirrors forward_local in extract_local_features from retrieval/model.py
     def prep_features(self, backbone_feat):
-        retrieval_model = self.model
+        retrieval_model = self.model#由于继承自Retriever，所以model就是Retriever中的model（也就是RetrievalModel）
 
-        # extract_features_and_attention without the encoding!
+        # extract_features_and_attention without the encoding!(相当于里面的extract_features_and_attention函数去掉了_encode_image)
         backbone_feat_prewhitened = retrieval_model.prewhiten(backbone_feat)
+
+        # 下面进行特征的投影
         proj_feat = retrieval_model.projector(backbone_feat_prewhitened) + (
             0.0 if not retrieval_model.residual else backbone_feat_prewhitened
         )
         attention = retrieval_model.attention(proj_feat)
         proj_feat_whitened = retrieval_model.postwhiten(proj_feat)
 
-        # how_select_local in
+        # how_select_local in（对前面获得的投影feature以及attention feature通过一定的策略来提取top k）
         topk_features, _, _ = how_select_local(
-            proj_feat_whitened, attention, retrieval_model.nfeat
+            proj_feat_whitened, attention, retrieval_model.nfeat# nfeat: num of feat to keep
         )
 
-        return topk_features
+        return topk_features#返回top k的特征
 
     def update(self, frame:Frame, add_after_query, k, min_thresh=0.0):
-        feat = self.prep_features(frame.feat)
+        feat = self.prep_features(frame.feat)#提取特征,返回的应该是top k的特征(extract_features_and_attention)
         id = self.kf_counter  # Using own counter since otherwise messes up IVF
 
         feat_np = feat[0].cpu().numpy()  # Assumes one frame at a time!

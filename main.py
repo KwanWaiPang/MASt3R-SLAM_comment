@@ -48,7 +48,7 @@ def relocalization(frame:Frame, keyframes:SharedKeyframes, factor_graph:FactorGr
             kf_idx = list(kf_idx)  # convert to list
             frame_idx = [n_kf - 1] * len(kf_idx)
             print("RELOCALIZING against kf ", n_kf - 1, " and ", kf_idx)
-            if factor_graph.add_factors(
+            if factor_graph.add_factors(#添加因子
                 frame_idx,
                 kf_idx,
                 config["reloc"]["min_match_frac"],
@@ -285,9 +285,9 @@ if __name__ == "__main__":
                 states.set_mode(Mode.RELOC)
             states.set_frame(frame)
 
-        elif mode == Mode.RELOC:
+        elif mode == Mode.RELOC:#如果是重定位状态
             X, C = mast3r_inference_mono(model, frame)
-            frame.update_pointmap(X, C)
+            frame.update_pointmap(X, C)#更新点云地图
             states.set_frame(frame)
             states.queue_reloc()
             # In single threaded mode, make sure relocalization happen for every frame
