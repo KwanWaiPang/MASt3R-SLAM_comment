@@ -122,10 +122,10 @@ def mast3r_inference_mono(model:AsymmetricMASt3R, frame):
         frame.feat, frame.pos, _ = model._encode_image(frame.img, frame.img_true_shape)#获取特征以及对应的位置信息
 
     feat = frame.feat
-    pos = frame.pos
+    pos = frame.pos #应该就是位置信息
     shape = frame.img_true_shape
 
-    res11, res21 = decoder(model, feat, feat, pos, pos, shape, shape)
+    res11, res21 = decoder(model, feat, feat, pos, pos, shape, shape)#解码
     res = [res11, res21]
     X, C, D, Q = zip(
         *[(r["pts3d"][0], r["conf"][0], r["desc"][0], r["desc_conf"][0]) for r in res]
