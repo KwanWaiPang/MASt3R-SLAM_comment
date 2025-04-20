@@ -303,6 +303,8 @@ def load_dataset(dataset_path):
     split_dataset_type = dataset_path.split("/")
     if "tum" in split_dataset_type:
         return TUMDataset(dataset_path)
+    if "tum_Dynamic_Objects" in split_dataset_type:
+        return TUMDataset(dataset_path)
     if "euroc" in split_dataset_type:
         return EurocDataset(dataset_path)
     if "eth3d" in split_dataset_type:
